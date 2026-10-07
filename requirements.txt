@@ -1,0 +1,15 @@
+# --- Web framework ---
+fastapi
+uvicorn[standard]      # ASGI server (run: uvicorn main:app --reload)
+
+# --- Database / ORM ---
+sqlalchemy             # ORM (SQLite works out of the box, no driver needed)
+alembic                # schema migrations
+psycopg2-binary        # PostgreSQL driver (sync)
+
+# --- Validation / config ---
+pydantic-settings      # load settings from .env (pydantic itself comes with fastapi)
+
+# --- Testing ---
+pytest
+httpx                  # required by FastAPI's TestClient
