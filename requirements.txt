@@ -9,6 +9,10 @@ psycopg2-binary        # PostgreSQL driver (sync)
 
 # --- Validation / config ---
 pydantic-settings      # load settings from .env (pydantic itself comes with fastapi)
+pydantic[email]        # adds email-validator, needed for pydantic EmailStr
+
+# --- Auth ---
+pwdlib[argon2]         # password hashing
 
 # --- Testing ---
 pytest
