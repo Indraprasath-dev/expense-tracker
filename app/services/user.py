@@ -1,14 +1,14 @@
+import logging
+
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import EmailAlreadyExists
 from app.core.security import hash_password
 from app.db.models import User
 from app.schemas.user import UserCreate
 
-
-class EmailAlreadyExists(Exception):
-    pass
+logger = logging.getLogger(__name__)
 
 
 def get_by_email(db: Session, email: str) -> User | None:
@@ -17,7 +17,8 @@ def get_by_email(db: Session, email: str) -> User | None:
 
 def create_user(db: Session, data: UserCreate) -> User:
     if get_by_email(db, data.email) is not None:
-        raise EmailAlreadyExists(data.email)
+        logger.warning("User not created: email already registered")
+        raise EmailAlreadyExists()
 
     user = User(
         email=data.email.strip().lower(),
@@ -25,10 +26,6 @@ def create_user(db: Session, data: UserCreate) -> User:
         hashed_password=hash_password(data.password),
     )
     db.add(user)
-    try:
-        db.commit()
-    except IntegrityError:
-        # Two requests with the same email can pass the check above at the same time.
-        db.rollback()
-        raise EmailAlreadyExists(data.email) from None
+    db.commit()
+    logger.info("User created successfully: user_id=%s", user.id)
     return user
