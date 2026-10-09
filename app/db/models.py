@@ -1,4 +1,3 @@
-import enum
 from datetime import UTC, date, datetime
 from decimal import Decimal
 
@@ -19,20 +18,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.enums import Month, PaymentMethod
 from app.db.base import Base
 
 
 def _now() -> datetime:
     return datetime.now(UTC)
-
-
-class PaymentMethod(str, enum.Enum):
-    """Allowed ways an expense can be paid."""
-
-    cash = "cash"
-    card = "card"
-    upi = "upi"
-    bank_transfer = "bank_transfer"
 
 
 class User(Base):
@@ -113,7 +104,7 @@ class Expense(Base):
 
 
 class Budget(Base):
-    """A monthly spending limit for one category."""
+    """A spending limit for one category in one month of the year (repeats every year)."""
 
     __tablename__ = "budgets"
     __table_args__ = (
@@ -129,7 +120,9 @@ class Budget(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     category_id: Mapped[int]
-    month: Mapped[date] = mapped_column(Date)  # store the first day of the month, e.g. 2026-10-01
+    month: Mapped[Month] = mapped_column(
+        Enum(Month, native_enum=False, length=10, values_callable=lambda e: [m.value for m in e])
+    )
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 

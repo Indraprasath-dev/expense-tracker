@@ -1,9 +1,9 @@
 # --- Web framework ---
 fastapi
-uvicorn[standard]      # ASGI server (run: uvicorn main:app --reload)
+uvicorn[standard]      # ASGI server (run: uvicorn app.main:app --reload)
 
 # --- Database / ORM ---
-sqlalchemy             # ORM (SQLite works out of the box, no driver needed)
+sqlalchemy             # ORM (talks to PostgreSQL through the driver below)
 alembic                # schema migrations
 psycopg2-binary        # PostgreSQL driver (sync)
 
