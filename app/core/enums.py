@@ -11,7 +11,7 @@ class PaymentMethod(str, enum.Enum):
 
 
 class Month(str, enum.Enum):
-    """The 12 months of the year, used by budgets (no year: a budget repeats every year)."""
+    """The 12 months of the year, used by budgets."""
 
     january = "january"
     february = "february"

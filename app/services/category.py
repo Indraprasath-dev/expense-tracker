@@ -3,13 +3,13 @@ import logging
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import (
+from app.db.models import Category, User
+from app.exceptions.errors import (
     CategoryArchived,
     CategoryNameExists,
     CategoryNotFound,
     UserNotFound,
 )
-from app.db.models import Category, User
 from app.schemas.category import CategoryCreate, CategoryUpdate
 
 logger = logging.getLogger(__name__)

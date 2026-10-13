@@ -3,8 +3,8 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import ExpenseNotFound, UserNotFound
 from app.db.models import Expense, User
+from app.exceptions.errors import ExpenseNotFound, UserNotFound
 from app.schemas.expense import ExpenseCreate, ExpenseUpdate
 from app.services import category as category_service
 
