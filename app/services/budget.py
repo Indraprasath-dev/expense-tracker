@@ -4,8 +4,8 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.enums import Month
-from app.core.exceptions import BudgetAlreadyExists, BudgetNotFound, UserNotFound
 from app.db.models import Budget, User
+from app.exceptions.errors import BudgetAlreadyExists, BudgetNotFound, UserNotFound
 from app.schemas.budget import BudgetCreate, BudgetUpdate
 from app.services import category as category_service
 

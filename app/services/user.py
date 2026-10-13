@@ -3,9 +3,9 @@ import logging
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import EmailAlreadyExists
 from app.core.security import hash_password
 from app.db.models import User
+from app.exceptions.errors import EmailAlreadyExists
 from app.schemas.user import UserCreate
 
 logger = logging.getLogger(__name__)

@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 
-from app.api.exception_handlers import register_exception_handlers
-from app.api.router import api_router
 from app.core.config import settings
 from app.core.log_config import setup_logging
+from app.core.router import api_router
+from app.exceptions.handlers import register_exception_handlers
 
 setup_logging(settings.LOG_LEVEL)
 

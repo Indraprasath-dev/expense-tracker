@@ -62,9 +62,11 @@ class Category(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     user: Mapped["User"] = relationship(back_populates="categories")
-    expenses: Mapped[list["Expense"]] = relationship(back_populates="category")
+    expenses: Mapped[list["Expense"]] = relationship(
+        back_populates="category", overlaps="expenses,user"
+    )
     budgets: Mapped[list["Budget"]] = relationship(
-        back_populates="category", cascade="all, delete-orphan"
+        back_populates="category", cascade="all, delete-orphan", overlaps="budgets,user"
     )
 
 
@@ -100,7 +102,9 @@ class Expense(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="expenses")
-    category: Mapped["Category"] = relationship(back_populates="expenses", overlaps="user")
+    category: Mapped["Category"] = relationship(
+        back_populates="expenses", overlaps="expenses,user"
+    )
 
 
 class Budget(Base):
@@ -127,4 +131,6 @@ class Budget(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     user: Mapped["User"] = relationship(back_populates="budgets")
-    category: Mapped["Category"] = relationship(back_populates="budgets", overlaps="user")
+    category: Mapped["Category"] = relationship(
+        back_populates="budgets", overlaps="budgets,user"
+    )
