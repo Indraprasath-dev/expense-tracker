@@ -13,6 +13,7 @@ pydantic[email]        # adds email-validator, needed for pydantic EmailStr
 
 # --- Auth ---
 pwdlib[argon2]         # password hashing
+pyjwt                  # sign and verify JWT access tokens
 
 # --- Testing ---
 pytest
