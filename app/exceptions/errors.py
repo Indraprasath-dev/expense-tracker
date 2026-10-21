@@ -22,6 +22,12 @@ class ConflictError(AppException):
     message = "Resource already exists."
 
 
+class UnauthorizedError(AppException):
+    status_code = 401
+    code = "unauthorized"
+    message = "Authentication required."
+
+
 class UserNotFound(NotFoundError):
     code = "user_not_found"
     message = "User not found."
@@ -60,3 +66,23 @@ class BudgetNotFound(NotFoundError):
 class BudgetAlreadyExists(ConflictError):
     code = "budget_already_exists"
     message = "A budget already exists for this category and month."
+
+
+class NotAuthenticated(UnauthorizedError):
+    code = "not_authenticated"
+    message = "Not authenticated."
+
+
+class InvalidCredentials(UnauthorizedError):
+    code = "invalid_credentials"
+    message = "Incorrect email or password."
+
+
+class InvalidToken(UnauthorizedError):
+    code = "invalid_token"
+    message = "Invalid token. Log in again."
+
+
+class TokenExpired(UnauthorizedError):
+    code = "token_expired"
+    message = "Token has expired. Log in again."
