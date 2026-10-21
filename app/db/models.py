@@ -1,4 +1,3 @@
-import enum
 from datetime import UTC, date, datetime
 from decimal import Decimal
 
@@ -19,20 +18,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.enums import Month, PaymentMethod
 from app.db.base import Base
 
 
 def _now() -> datetime:
     return datetime.now(UTC)
-
-
-class PaymentMethod(str, enum.Enum):
-    """Allowed ways an expense can be paid."""
-
-    cash = "cash"
-    card = "card"
-    upi = "upi"
-    bank_transfer = "bank_transfer"
 
 
 class User(Base):
@@ -71,9 +62,11 @@ class Category(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     user: Mapped["User"] = relationship(back_populates="categories")
-    expenses: Mapped[list["Expense"]] = relationship(back_populates="category")
+    expenses: Mapped[list["Expense"]] = relationship(
+        back_populates="category", overlaps="expenses,user"
+    )
     budgets: Mapped[list["Budget"]] = relationship(
-        back_populates="category", cascade="all, delete-orphan"
+        back_populates="category", cascade="all, delete-orphan", overlaps="budgets,user"
     )
 
 
@@ -109,11 +102,13 @@ class Expense(Base):
     )
 
     user: Mapped["User"] = relationship(back_populates="expenses")
-    category: Mapped["Category"] = relationship(back_populates="expenses", overlaps="user")
+    category: Mapped["Category"] = relationship(
+        back_populates="expenses", overlaps="expenses,user"
+    )
 
 
 class Budget(Base):
-    """A monthly spending limit for one category."""
+    """A spending limit for one category in one month of the year (repeats every year)."""
 
     __tablename__ = "budgets"
     __table_args__ = (
@@ -129,9 +124,13 @@ class Budget(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     category_id: Mapped[int]
-    month: Mapped[date] = mapped_column(Date)  # store the first day of the month, e.g. 2026-10-01
+    month: Mapped[Month] = mapped_column(
+        Enum(Month, native_enum=False, length=10, values_callable=lambda e: [m.value for m in e])
+    )
     amount: Mapped[Decimal] = mapped_column(Numeric(12, 2))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
     user: Mapped["User"] = relationship(back_populates="budgets")
-    category: Mapped["Category"] = relationship(back_populates="budgets", overlaps="user")
+    category: Mapped["Category"] = relationship(
+        back_populates="budgets", overlaps="budgets,user"
+    )

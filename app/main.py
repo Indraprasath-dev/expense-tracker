@@ -1,7 +1,14 @@
 from fastapi import FastAPI
 
-from app.api.routers import health
+from app.core.config import settings
+from app.core.log_config import setup_logging
+from app.core.router import api_router
+from app.exceptions.handlers import register_exception_handlers
+
+setup_logging(settings.LOG_LEVEL)
 
 app = FastAPI(title="Expense Tracker")
 
-app.include_router(health.router, prefix="/api/v1")
+register_exception_handlers(app)
+
+app.include_router(api_router)
